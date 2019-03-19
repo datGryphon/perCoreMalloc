@@ -1,6 +1,4 @@
 //Caleb Wastler
-//CS5600 hw4
-
 --------------------------------------------------------------------------------
 				  READ ME
 --------------------------------------------------------------------------------
@@ -38,25 +36,27 @@ Make Directives:
 
 Design Overview:
 	
-	For this project my goal was to reuse all of my working logic from hw4.  To
-	do this I statically allocate a list of structs for my arena at the 
-	beginning of the prgm break area. Inside each struct is a mutex, 4 bin lists 
-	and a bunch of counters for malloc_stats, exactly the same setup from 
-	hw4.
+	For this project my goal was to reuse all of my working logic from a past 
+	project.  To do this I statically allocate a list of structs for my arena 
+	at the beginning of the prgm break area. Inside each struct is a mutex, 4 
+	bin lists and a bunch of counters for malloc_stats, exactly the same setup 
+	from set of data structures I used to implement a malloc library for a 
+	single core were used.
 
-	There were 4 pieces of functionality that I needed to add from the previous 
-	project. First, I added multi-threaded protection for the program break area
-	where the small allocations are handled.  Second, was making it so that 
-	every thread gets assigned to a cpu arena, by getting bound to the arena
-	of the first CPU it calls malloc from. Third was adding in an additional 
-	field to the header of each memory segment so that when given to free, 
-	because it may be the case a thread is freeing a piece of memory it was 
-	given by another thread. Fourth, in order to make sure my program handled 
-	calls to exec properly, I had to change how my code is initialized.  
-	Instead of having my init function as a __attribute__(constructor), I had to
-	check in malloc whether or not the library had been initialized yet and 
-	otherwise I had to start up all the datastucts. It avoided segfaults after a
-	call to exec but before flow control had been given to my constructor.
+	There were 4 pieces of functionality that I needed to add from the 
+	previous project. First, I added multi-threaded protection for the program 
+	break area where the small allocations are handled.  Second, was making it 
+	so that every thread gets assigned to a cpu arena, by getting bound to the 
+	arena of the first CPU it calls malloc from. Third was adding in an 
+	additional field to the header of each memory segment so that when given 
+	to free, because it may be the case a thread is freeing a piece of memory 
+	it was given by another thread. Fourth, in order to make sure my program 
+	handled calls to exec properly, I had to change how my code is 
+	initialized. Instead of having my init function as a 
+	__attribute__(constructor), I had to check in malloc whether or not the 
+	library had been initialized yet and otherwise I had to start up all the 
+	datastucts. It avoided segfaults after a call to exec but before flow 
+	control had been given to my constructor.
 
 	Finally, to support the fork() system call, I registered a lock_all 
 	[mutexes] and an unlock_all [mutexes] function (in shared_structures.c)so 
@@ -67,17 +67,14 @@ Design Overview:
 
 Notes:
 
-	See my note on Piazza for the details. When my libmalloc.so is preloaded
-	into a program that calls printf, I have memory that is allocated but never
-	freed before the end of the program.  Replacing printf with snprintf 
-	followed by write avoids this problem, see test.c.
+	When my libmalloc.so is preloaded into a program that calls printf, I have memory that is allocated but never freed before the end of the program.  Replacing printf with snprintf followed by write avoids this problem, see test.c.
 
 Bugs:
 
  	Posix_memalign works, but my wrapper functions which use posix_memalign
- 	underneath truncate the ptr that is returned to the application so only the 
- 	lower 32 bits are visible back in the application's print statement. I'm not
- 	sure what the problem is, I'm guessing there's some c-typing intricacy that 
- 	I am not remembering. But I have tested and confirmed that the posix version
- 	works for allocation and freeing and it is well documented to explain how
- 	it works (wrappers.c). 
+ 	underneath truncate the ptr that is returned to the application so only 
+ 	the lower 32 bits are visible back in the application's print statement. 
+ 	I'm not sure what the problem is, I'm guessing there's some c-typing 
+ 	intricacy that I am not remembering. But I have tested and confirmed that 
+ 	the posix version works for allocation and freeing and it is well 
+ 	documented to explain how it works (wrappers.c). 
