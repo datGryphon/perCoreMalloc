@@ -67,7 +67,10 @@ Design Overview:
 
 Notes:
 
-	When my libmalloc.so is preloaded into a program that calls printf, I have memory that is allocated but never freed before the end of the program.  Replacing printf with snprintf followed by write avoids this problem, see test.c.
+	When my libmalloc.so is preloaded into a program that calls printf, I have 
+	memory that is allocated but never freed before the end of the program.  
+	Replacing printf with snprintf followed by write avoids this problem, see 
+	test.c.
 
 Bugs:
 
