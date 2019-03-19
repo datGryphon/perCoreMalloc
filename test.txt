@@ -1,0 +1,1 @@
+this is a test of running nano inside a bash shell running on my libmalloc.so
